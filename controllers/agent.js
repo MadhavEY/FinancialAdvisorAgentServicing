@@ -5,10 +5,11 @@ const moment = require("moment/moment");
 exports.getServiceList = async (request, reply) => {
   try {
     const { identity } = request.isValid;
-    const data = await agent.getServcingList(identity); // Getting meta data from DB & maping keys
+    const { pageNumber, pageCount } = request.body;
+    const srData = await agent.getServcingList(identity, pageNumber, pageCount); // Getting meta data from DB & maping keys
 
-    if (data.length > 0) {
-      data.map(item => {
+    if (srData.data.length > 0) {
+      srData.data.map(item => {
         item.created_date = moment(item.created_date).format("D MMM YYYY");
         item.sr_closed_time = moment(item.sr_closed_time).format("D MMM YYYY");
       });
@@ -19,7 +20,7 @@ exports.getServiceList = async (request, reply) => {
           responseFormatter(
             statusCodes.OK,
             "SR Data retrieved successfully",
-            data
+            srData
           )
         );
     } else {

@@ -8,7 +8,7 @@ servers:
     description: Development server
 paths:
   /agent/get-sr-list:
-    get:
+    post:
       summary: Fetch SR data
       description: Retrieves the SR data by identity.
       operationId: getServiceList
