@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+  title: Financial Advisor Backend API
+  description: Backend service for the financial advisor frontend.
+  version: "1.0"
+servers:
+  - url: http://localhost:8083
+    description: Development server
+paths:
+  /agent/get-sr-list:
+    get:
+      summary: Fetch SR data
+      description: Retrieves the SR data by identity.
+      operationId: getServiceList
+      parameters:
+        - name: authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."
+      responses:
+        "200":
+          description: SR Data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: HTTP status code
+                    example: 200
+                  message:
+                    type: string
+                    description: Status message
+                    example: "SR Data retrieved successfully"
+                  data:
+                    type: array
+                    description: List of meta data objects
+                    items:
+                      type: object
+                      properties:
+                        ticket:
+                          type: string
+                          description: Unique identifier for the SR
+                          example: "4678e1bb1f2d414393a85dfbe0c85fff"
+                        created_date:
+                          type: string
+                          description: Date of the request raised
+                          example: "19 Nov 2024"
+                        sr_closed_time:
+                          type: string
+                          description: Date of the request closed
+                          example: "19 Nov 2024"
+                        categoryname:
+                          type: string
+                          description: Category of the SR
+                          example: "Nominee"
+                        sub_category_name:
+                          type: string
+                          description: Sub-Category of the SR
+                          example: "Nominee"
+                        sr_status:
+                          type: string
+                          description: Status of the SR
+                          example: "Approved"
+        "401":
+          description: Unauthorized - Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized access."
