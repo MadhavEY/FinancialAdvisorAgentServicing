@@ -40,3 +40,43 @@ exports.getServiceList = async (request, reply) => {
       );
   }
 };
+
+exports.getHierarchy = async (request, reply) => {
+  try {
+    const { agent_code } = request.query;
+    // const { pageNumber, pageCount, agent_code } = request.body;
+    // const hierarchyData = await agent.getHierarchy(agent_code, pageNumber, pageCount); // Getting meta data from DB & maping keys
+    const hierarchyData = await agent.getHierarchy(agent_code); // Getting meta data from DB & maping keys
+
+    if (hierarchyData.length > 0) {
+      // srData.data.map(item => {
+      //   item.created_date = moment(item.created_date).format("D MMM YYYY");
+      //   item.sr_closed_time = moment(item.sr_closed_time).format("D MMM YYYY");
+      // });
+      await event.insertEventTransaction(request.isValid);
+      return reply
+        .status(statusCodes.OK)
+        .send(
+          responseFormatter(
+            statusCodes.OK,
+            "Hierarchy data retrieved successfully",
+            hierarchyData
+          )
+        );
+    } else {
+      return reply
+        .status(statusCodes.NO_CONTENT)
+        .send(responseFormatter(statusCodes.NO_CONTENT, "Data not found"));
+    }
+  } catch (error) {
+    return reply
+      .status(statusCodes.INTERNAL_SERVER_ERROR)
+      .send(
+        responseFormatter(
+          statusCodes.INTERNAL_SERVER_ERROR,
+          "Internal server error occurred",
+          { error: error.message }
+        )
+      );
+  }
+};

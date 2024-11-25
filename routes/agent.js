@@ -8,6 +8,11 @@ async function quoteRoutes(fastify, options) {
         { preHandler: [authentication, validation] },
         agent.getServiceList
     );
+    fastify.get(
+        "/get-hierarchy",
+        { preHandler: [authentication, validation] },
+        agent.getHierarchy
+    );
   }
   
   module.exports = quoteRoutes;
