@@ -3,7 +3,7 @@ const { agent } = require("../controllers");
 
 
 async function quoteRoutes(fastify, options) {
-    fastify.get(
+    fastify.post(
         "/get-sr-list",
         { preHandler: [authentication, validation] },
         agent.getServiceList

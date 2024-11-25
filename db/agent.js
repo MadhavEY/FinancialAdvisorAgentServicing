@@ -1,7 +1,8 @@
 const { client } = require("../config/db");
 
-const getServcingList = async (identity) => {
+const getServcingList = async (identity, pageNumber, pageCount) => {
   try {
+    const offset = (pageNumber - 1) * pageCount;
     const query = `
     SELECT 
     st.idsr_transaction as ticket,
@@ -19,9 +20,24 @@ const getServcingList = async (identity) => {
     INNER JOIN agentservicing.as_metadata am 
     ON st.idmeta_sr_status  = am.idmetadata 
     WHERE identity_sr_createdby = $1
+    LIMIT $2 OFFSET $3
     `;
-    const res = await client.query(query, [identity]);
-    return res.rows;
+
+    const countQuery = `
+      SELECT COUNT(*) AS totalCount 
+      FROM agentservicing.sr_transaction
+      WHERE identity_sr_createdby = $1
+    `;
+
+    const countRes = await client.query(countQuery, [identity]);
+    const totalCount = parseInt(countRes.rows[0].totalcount, 10);
+    const totalPages = Math.ceil(totalCount / pageCount);
+    const res = await client.query(query, [identity, pageCount, offset]);
+    return {
+      totalCount,
+      totalPages,
+      data: res.rows
+    };
   } catch (error) {
     console.error("Error: ", error);
     throw error;
