@@ -22,7 +22,7 @@ paths:
             example: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."
       responses:
         "200":
-          description: SR Data retrieved successfully
+          description: Hierarchy data retrieved successfully
           content:
             application/json:
               schema:
@@ -77,10 +77,11 @@ paths:
                     type: string
                     example: "Unauthorized access."
 
-  /agent/get-hirarchy:
+  /agent/get-hierarchy:
     get:
       summary: Fetch hierarchy data
-      description: Retrieves the hierarchy data by agent_code
+      description: Retrieves the hierarchy data by agent code
+      operationId: getHierarchy
       parameters:
         - name: authorization
           in: header
@@ -104,7 +105,7 @@ paths:
                   message:
                     type: string
                     description: Status message
-                    example: "SR Data retrieved successfully"
+                    example: "Hierarchy data retrieved successfully"
                   data:
                     type: array
                     description: List of hierarchy data objects
