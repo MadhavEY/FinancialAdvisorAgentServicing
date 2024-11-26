@@ -8,10 +8,10 @@ async function quoteRoutes(fastify, options) {
         { preHandler: [authentication, validation] },
         agent.getServiceList
     );
-    fastify.get(
-        "/get-hierarchy",
+    fastify.post(
+        "/get-directory",
         { preHandler: [authentication, validation] },
-        agent.getHierarchy
+        agent.getDirectory
     );
   }
   
