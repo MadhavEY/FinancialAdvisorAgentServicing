@@ -57,7 +57,8 @@ exports.getDirectory = async (request, reply) => {
       item.userProfile = await agent.getUserProfileData(item.userOfficialDetails.identity);
       item.userContacts = await agent.getUserContactData(item.userOfficialDetails.identity);
       item.userType = await agent.getUserType(item.userOfficialDetails.identity);
-    })
+    });
+    response.data.sort((a, b) => parseInt(a.advisor_code) - parseInt(b.advisor_code)); //temporary code to put res at first place
     if (response.data.length > 0) {
       await event.insertEventTransaction(request.isValid);
       return reply
