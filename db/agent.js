@@ -79,7 +79,7 @@ const getOfficialDetailsByAgentCode = async (agent_code) => {
     FROM core.profile p 
     WHERE business_code = $1`;
     const res = await client.query(query, [agent_code]);
-    return res.rows[0];
+    return res.rows[0] || {};
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -94,7 +94,7 @@ const getUserProfileData = async (identity) => {
     FROM core.entity
     WHERE identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows[0];
+    return res.rows[0] || {};
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -112,7 +112,7 @@ const getUserContactData = async (identity) => {
     ON ec.idmeta_contact_type = cm.idmetadata 
     WHERE identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows;
+    return res.rows || [];
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -130,7 +130,7 @@ const getUserType = async (identity) => {
     ON u.idusertype = urc.idusertype 
     WHERE eua.identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows[0].usertype;
+    return res.rows.length? res.rows[0]?.usertype : '';
   } catch (error) {
     console.error("Error: ", error);
     throw error;
