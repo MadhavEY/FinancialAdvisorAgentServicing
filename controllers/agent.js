@@ -26,8 +26,14 @@ exports.getServiceList = async (request, reply) => {
         );
     } else {
       return reply
-        .status(statusCodes.NO_CONTENT)
-        .send(responseFormatter(statusCodes.NO_CONTENT, "Data not found"));
+        .status(statusCodes.OK)
+        .send(
+          responseFormatter(
+            statusCodes.OK, 
+            "Data not found",
+            srData
+          )
+        );
     }
   } catch (error) {
     return reply
@@ -65,8 +71,14 @@ exports.getDirectory = async (request, reply) => {
         );
     } else {
       return reply
-        .status(statusCodes.NO_CONTENT)
-        .send(responseFormatter(statusCodes.NO_CONTENT, "Data not found"));
+        .status(statusCodes.OK)
+        .send(
+          responseFormatter(
+            statusCodes.OK, 
+            "Data not found",
+            response
+          )
+        );
     }
   } catch (error) {
     return reply
