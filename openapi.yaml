@@ -77,8 +77,8 @@ paths:
                     type: string
                     example: "Unauthorized access."
 
-  /agent/get-hierarchy:
-    get:
+  /agent/get-directory:
+    post:
       summary: Fetch hierarchy data
       description: Retrieves the hierarchy data by agent code
       operationId: getHierarchy
@@ -90,6 +90,61 @@ paths:
           schema:
             type: string
             example: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."
+      requestBody:
+        required: true
+        description: Filters for the hierarchy data.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pageNumber:
+                  type: integer
+                  description: Page number for pagination.
+                  example: 1
+                pageCount:
+                  type: integer
+                  description: Number of items per page for pagination.
+                  example: 10
+                filterOptions:
+                  type: object
+                  description: Filters for hierarchy data.
+                  properties:
+                    leaderCode:
+                      type: string
+                      description: Code of the leader.
+                      example: "908050"
+                    leaderType:
+                      type: string
+                      description: Type of the leader.
+                      example: "all"
+                    designation:
+                      type: string
+                      description: Designation filter (can be null).
+                      example: null
+                    agentCode:
+                      type: string
+                      description: Agent code (can be null).
+                      example: null
+                    type:
+                      type: string
+                      description: Type filter (can be null).
+                      example: null
+                    searchText:
+                      type: string
+                      description: Text for searching (can be empty).
+                      example: ""
+                    statusType:
+                      type: string
+                      description: Status type filter.
+                      example: "5"
+                    agentCodes:
+                      type: array
+                      items:
+                        type: string
+                      description: List of agent codes (can be empty).
+                      example: []
+
       responses:
         "200":
           description: Hierarchy data retrieved successfully
@@ -107,307 +162,492 @@ paths:
                     description: Status message
                     example: "Hierarchy data retrieved successfully"
                   data:
-                    type: array
-                    description: List of hierarchy data objects
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          description: Unique identifier for the agent
-                          example: "1"
-                        nstatus:
-                          type: string
-                          description: Status of the request
-                          example: "5"
-                        advisor_code:
-                          type: string
-                          description: Advisor code
-                          example: "786"
-                        advisor_name:
-                          type: string
-                          description: Name of the advisor
-                          example: "PRAGNESHKUMAR JAYANTIBHAI PATEL"
-                        desgn_code:
-                          type: string
-                          description: Designation code
-                          example: "SB"
-                        desgn_desc:
-                          type: string
-                          description: Designation description
-                          example: "ADVISOR - BA"
-                        branch_code:
-                          type: string
-                          description: Branch code
-                          example: "AH01"
-                        branch_name:
-                          type: string
-                          description: Branch name
-                          example: "Ahmedabad - Prerna Arcade"
-                        dt_leader_code:
-                          type: string
-                          description: Code of the direct team leader
-                          example: "4594986"
-                        dt_leader_name:
-                          type: string
-                          description: Name of the direct team leader
-                          example: "H PATEL AND ASSOCIATES"
-                        dt_leader_desg_desc:
-                          type: string
-                          description: Direct team leader's designation description
-                          example: "SENIOR BUSINESS ASSOCIATE LEADER"
-                        dt_leader_designation:
-                          type: string
-                          description: Direct team leader's designation
-                          example: "LU"
-                        dt_leader_branch:
-                          type: string
-                          description: Direct team leader's branch code
-                          example: "AH01"
-                        dt_leader_branch_name:
-                          type: string
-                          description: Direct team leader's branch name
-                          example: "Ahmedabad - Prerna Arcade"
-                        l1_leader_code:
-                          type: string
-                          description: Code of the level 1 leader
-                          example: "1829032"
-                        l1_leader_name:
-                          type: string
-                          description: Name of the level 1 leader
-                          example: "KD AND ASSOCIATES"
-                        l1_leader_desg_desc:
-                          type: string
-                          description: Level 1 leader's designation description
-                          example: "PARTNER"
-                        l1_leader_designation:
-                          type: string
-                          description: Level 1 leader's designation
-                          example: "LW"
-                        l1_leader_branch:
-                          type: string
-                          description: Level 1 leader's branch code
-                          example: "AH01"
-                        l1_leader_branch_name:
-                          type: string
-                          description: Level 1 leader's branch name
-                          example: "Ahmedabad - Prerna Arcade"
-                        l2_leader_code:
-                          type: string
-                          description: Code of the level 2 leader
-                          example: "207272"
-                        l2_leader_name:
-                          type: string
-                          description: Name of the level 2 leader
-                          example: "KCG AND ASSOCIATES"
-                        l2_leader_desg_desc:
-                          type: string
-                          description: Level 2 leader's designation description
-                          example: "II-MANAGERIAL BUSINESS ASSOCIATE - BA"
-                        l2_leader_designation:
-                          type: string
-                          description: Level 2 leader's designation
-                          example: "MV"
-                        l2_leader_branch:
-                          type: string
-                          description: Level 2 leader's branch code
-                          example: "AH01"
-                        l2_leader_branch_name:
-                          type: string
-                          description: Level 2 leader's branch name
-                          example: "Ahmedabad - Prerna Arcade"
-                        bam_ntid:
-                          type: string
-                          description: BAM NTID
-                          example: "OEAJM86"
-                        bam_code:
-                          type: string
-                          description: BAM code
-                          example: "5552730"
-                        bam_emp_cd:
-                          type: string
-                          description: BAM employee code
-                          example: "4019857"
-                        bam_name:
-                          type: string
-                          description: BAM name
-                          example: "Sudhirkumar Maheshbhai Rana"
-                        bam_designation:
-                          type: string
-                          description: BAM designation
-                          example: "S2"
-                        bam_desg_desc:
-                          type: string
-                          description: BAM designation description
-                          example: "ASSISTANT MANAGER AGENCY BA"
-                        bam_branch:
-                          type: string
-                          description: BAM branch code
-                          example: "AH01"
-                        bam_branch_name:
-                          type: string
-                          description: BAM branch name
-                          example: "Ahmedabad - Prerna Arcade"
-                        bm_ntid:
-                          type: string
-                          description: BM NTID
-                          example: "NULL"
-                        bm_code:
-                          type: string
-                          description: BM code
-                          example: "NULL"
-                        bm_emp_cd:
-                          type: string
-                          description: BM employee code
-                          example: "NULL"
-                        bm_name:
-                          type: string
-                          description: BM name
-                          example: "NULL"
-                        bm_designation:
-                          type: string
-                          description: BM designation
-                          example: "NULL"
-                        bm_desg_desc:
-                          type: string
-                          description: BM designation description
-                          example: "NULL"
-                        bm_branch:
-                          type: string
-                          description: BM branch code
-                          example: "NULL"
-                        bm_branch_name:
-                          type: string
-                          description: BM branch name
-                          example: "NULL"
-                        ch_ntid:
-                          type: string
-                          description: CH NTID
-                          example: "OEADU95"
-                        ch_code:
-                          type: string
-                          description: CH code
-                          example: "4903376"
-                        ch_emp_cd:
-                          type: string
-                          description: CH employee code
-                          example: "3978238"
-                        ch_name:
-                          type: string
-                          description: CH name
-                          example: "Anurag Agarwal"
-                        ch_designation:
-                          type: string
-                          description: CH designation
-                          example: "SI"
-                        ch_desg_desc:
-                          type: string
-                          description: CH designation description
-                          example: "Associate Director of Agency"
-                        ch_branch:
-                          type: string
-                          description: CH branch code
-                          example: "AH01"
-                        ch_branch_name:
-                          type: string
-                          description: CH branch name
-                          example: "Ahmedabad - Prerna Arcade"
-                        adoanonsourcing_ntid:
-                          type: string
-                          description: ADOA nonsourcing NTID
-                          example: "NULL"
-                        adoanonsourcing_code:
-                          type: string
-                          description: ADOA nonsourcing code
-                          example: "4903376"
-                        adoanonsourcing_emp_cd:
-                          type: string
-                          description: ADOA nonsourcing employee code
-                          example: "NULL"
-                        adoanonsourcing_name:
-                          type: string
-                          description: ADOA nonsourcing name
-                          example: "NULL"
-                        adoanonsourcing_designation:
-                          type: string
-                          description: ADOA nonsourcing designation
-                          example: "SI"
-                        adoanonsourcing_desg_desc:
-                          type: string
-                          description: ADOA nonsourcing designation description
-                          example: "Associate Director of Agency"
-                        adoanonsourcing_branch:
-                          type: string
-                          description: ADOA nonsourcing branch code
-                          example: "AH01"
-                        adoanonsourcing_branch_name:
-                          type: string
-                          description: ADOA nonsourcing branch name
-                          example: "Ahmedabad - Prerna Arcade"
-                        doa_ntid:
-                          type: string
-                          description: DOA NTID
-                          example: "OAAGW37"
-                        doa_code:
-                          type: string
-                          description: DOA code
-                          example: "4604241"
-                        doa_emp_cd:
-                          type: string
-                          description: DOA employee code
-                          example: "3964314"
-                        doa_name:
-                          type: string
-                          description: DOA name
-                          example: "Tushar Bhatt"
-                        doa_designation:
-                          type: string
-                          description: DOA designation
-                          example: "S7"
-                        doa_desg_desc:
-                          type: string
-                          description: DOA designation description
-                          example: "DIRECTOR OF AGENCY"
-                        doa_branch:
-                          type: string
-                          description: DOA branch code
-                          example: "AH02"
-                        doa_branch_name:
-                          type: string
-                          description: DOA branch name
-                          example: "Ahmedabad - Iscon Mall"
-                        cao_ntid:
-                          type: string
-                          description: CAO NTID
-                          example: "OAAPW28"
-                        cao_code:
-                          type: string
-                          description: CAO code
-                          example: "4656339"
-                        cao_emp_cd:
-                          type: string
-                          description: CAO employee code
-                          example: "3967781"
-                        cao_name:
-                          type: string
-                          description: CAO name
-                          example: "Sachin Chawla"
-                        cao_designation:
-                          type: string
-                          description: CAO designation
-                          example: "S8"
-                        cao_desg_desc:
-                          type: string
-                          description: CAO designation description
-                          example: "SENIOR DIRECTOR OF AGENCY"
-                        cao_branch_code:
-                          type: string
-                          description: CAO branch code
-                          example: "SU01"
-                        cao_branch_name:
-                          type: string
-                          description: CAO branch name
-                          example: "Surat"
+                    type: object
+                    properties:
+                      totalCount:
+                        type: integer
+                        description: Total number of results available
+                        example: 1
+                      totalPages:
+                        type: integer
+                        description: Total number of pages
+                        example: 1
+                      data:
+                        type: array
+                        description: List of hierarchy data objects
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Unique identifier for the agent
+                              example: "3"
+                            nstatus:
+                              type: string
+                              description: Status of the request
+                              example: "5"
+                            advisor_code:
+                              type: string
+                              description: Advisor code
+                              example: "786"
+                            advisor_name:
+                              type: string
+                              description: Name of the advisor
+                              example: "VICTOR  BANERJEE"
+                            desgn_code:
+                              type: string
+                              description: Designation code
+                              example: "LP"
+                            desgn_desc:
+                              type: string
+                              description: Designation description
+                              example: "LIFE PLANNER"
+                            branch_code:
+                              type: string
+                              description: Branch code
+                              example: "JM01"
+                            branch_name:
+                              type: string
+                              description: Branch name
+                              example: "Jamshedpur"
+                            dt_leader_code:
+                              type: string
+                              description: Code of the direct team leader
+                              example: "5023814"
+                            dt_leader_name:
+                              type: string
+                              description: Name of the direct team leader
+                              example: "GROW INFINITY ASSOCIATES"
+                            dt_leader_desg_desc:
+                              type: string
+                              description: Direct team leader's designation description
+                              example: "BUSINESS ASSOCIATE LEADER"
+                            dt_leader_designation:
+                              type: string
+                              description: Direct team leader's designation
+                              example: "LS"
+                            dt_leader_branch:
+                              type: string
+                              description: Direct team leader's branch code
+                              example: "JM01"
+                            dt_leader_branch_name:
+                              type: string
+                              description: Direct team leader's branch name
+                              example: "Jamshedpur"
+                            l1_leader_code:
+                              type: string
+                              description: Code of the level 1 leader
+                              example: "908050"
+                            l1_leader_name:
+                              type: string
+                              description: Name of the level 1 leader
+                              example: "BSC CONSULTANCY SERVICES"
+                            l1_leader_desg_desc:
+                              type: string
+                              description: Level 1 leader's designation description
+                              example: "SENIOR BUSINESS ASSOCIATE LEADER"
+                            l1_leader_designation:
+                              type: string
+                              description: Level 1 leader's designation
+                              example: "LU"
+                            l1_leader_branch:
+                              type: string
+                              description: Level 1 leader's branch code
+                              example: "JM01"
+                            l1_leader_branch_name:
+                              type: string
+                              description: Level 1 leader's branch name
+                              example: "Jamshedpur"
+                            l2_leader_code:
+                              type: string
+                              description: Code of the level 2 leader
+                              example: "181453"
+                            l2_leader_name:
+                              type: string
+                              description: Name of the level 2 leader
+                              example: "ANAMIKA ADVISORY SERVICES"
+                            l2_leader_desg_desc:
+                              type: string
+                              description: Level 2 leader's designation description
+                              example: "PARTNER"
+                            l2_leader_designation:
+                              type: string
+                              description: Level 2 leader's designation
+                              example: "LW"
+                            l2_leader_branch:
+                              type: string
+                              description: Level 2 leader's branch code
+                              example: "JM01"
+                            l2_leader_branch_name:
+                              type: string
+                              description: Level 2 leader's branch name
+                              example: "Jamshedpur"
+                            bam_ntid:
+                              type: string
+                              description: BAM NTID
+                              example: "OEACV29"
+                            bam_code:
+                              type: string
+                              description: BAM code
+                              example: "4807212"
+                            bam_emp_cd:
+                              type: string
+                              description: BAM employee code
+                              example: "3975701"
+                            bam_name:
+                              type: string
+                              description: BAM name
+                              example: "SanketKumar  Sinha"
+                            bam_designation:
+                              type: string
+                              description: BAM designation
+                              example: "S3"
+                            bam_desg_desc:
+                              type: string
+                              description: BAM designation description
+                              example: "MANAGER AGENCY BA"
+                            bam_branch:
+                              type: string
+                              description: BAM branch code
+                              example: "JM01"
+                            bam_branch_name:
+                              type: string
+                              description: BAM branch name
+                              example: "Jamshedpur"
+                            bm_ntid:
+                              type: string
+                              description: BM NTID
+                              example: "OAAIE55"
+                            bm_code:
+                              type: string
+                              description: BM code
+                              example: "4653296"
+                            bm_emp_cd:
+                              type: string
+                              description: BM employee code
+                              example: "3967298"
+                            bm_name:
+                              type: string
+                              description: BM name
+                              example: "ROHITKUMAR PAHUJA"
+                            bm_designation:
+                              type: string
+                              description: BM designation
+                              example: "SF"
+                            bm_desg_desc:
+                              type: string
+                              description: BM designation description
+                              example: "BRANCH MGR AGENCY SALES"
+                            bm_branch:
+                              type: string
+                              description: BM branch code
+                              example: "JM01"
+                            bm_branch_name:
+                              type: string
+                              description: BM branch name
+                              example: "Jamshedpur"
+                            ch_ntid:
+                              type: string
+                              description: CH NTID
+                              example: "NULL"
+                            ch_code:
+                              type: string
+                              description: CH code
+                              example: "NULL"
+                            ch_emp_cd:
+                              type: string
+                              description: CH employee code
+                              example: "NULL"
+                            ch_name:
+                              type: string
+                              description: CH name
+                              example: "NULL"
+                            ch_designation:
+                              type: string
+                              description: CH designation
+                              example: "NULL"
+                            ch_desg_desc:
+                              type: string
+                              description: CH designation description
+                              example: "NULL"
+                            ch_branch:
+                              type: string
+                              description: CH branch code
+                              example: "NULL"
+                            ch_branch_name:
+                              type: string
+                              description: CH branch name
+                              example: "NULL"
+                            adoa_nonsourcing_ntid:
+                              type: string
+                              description: ADOA non-sourcing NTID
+                              example: "OAGSK4615"
+                            adoa_nonsourcing_code:
+                              type: string
+                              description: ADOA non-sourcing code
+                              example: "NULL"
+                            adoa_nonsourcing_emp_cd:
+                              type: string
+                              description: ADOA non-sourcing employee code
+                              example: "3954775"
+                            adoa_nonsourcing_name:
+                              type: string
+                              description: ADOA non-sourcing name
+                              example: "SHYAM NARAYAN SINGH"
+                            adoa_nonsourcing_designation:
+                              type: string
+                              description: ADOA non-sourcing designation
+                              example: "NULL"
+                            adoa_nonsourcing_desg_desc:
+                              type: string
+                              description: ADOA non-sourcing designation description
+                              example: "NULL"
+                            adoa_nonsourcing_branch:
+                              type: string
+                              description: ADOA non-sourcing branch code
+                              example: "NULL"
+                            adoa_nonsourcing_branch_name:
+                              type: string
+                              description: ADOA non-sourcing branch name
+                              example: "NULL"
+                            adoa_ntid:
+                              type: string
+                              description: ADOA NTID
+                              example: "NULL"
+                            adoa_code:
+                              type: string
+                              description: ADOA code
+                              example: "NULL"
+                            adoa_emp_cd:
+                              type: string
+                              description: ADOA employee code
+                              example: "NULL"
+                            adoa_name:
+                              type: string
+                              description: ADOA name
+                              example: "NULL"
+                            adoa_designation:
+                              type: string
+                              description: ADOA designation
+                              example: "NULL"
+                            adoa_desg_desc:
+                              type: string
+                              description: ADOA designation description
+                              example: "NULL"
+                            adoa_branch_code:
+                              type: string
+                              description: ADOA branch code
+                              example: "NULL"
+                            adoa_branch_name:
+                              type: string
+                              description: ADOA branch name
+                              example: "NULL"
+                            doa_ntid:
+                              type: string
+                              description: DOA NTID
+                              example: "OAGSI13"
+                            doa_code:
+                              type: string
+                              description: DOA code
+                              example: "4015704"
+                            doa_emp_cd:
+                              type: string
+                              description: DOA employee code
+                              example: "3808488"
+                            doa_name:
+                              type: string
+                              description: DOA name
+                              example: "Md. Shahid Khan"
+                            doa_designation:
+                              type: string
+                              description: DOA designation
+                              example: "S7"
+                            doa_desg_desc:
+                              type: string
+                              description: DOA designation description
+                              example: "DIRECTOR OF AGENCY"
+                            doa_branch:
+                              type: string
+                              description: DOA branch code
+                              example: "JM01"
+                            doa_branch_name:
+                              type: string
+                              description: DOA branch name
+                              example: "Jamshedpur"
+                            cao_ntid:
+                              type: string
+                              description: CAO NTID
+                              example: "OAGSC3671"
+                            cao_code:
+                              type: string
+                              description: CAO code
+                              example: "4456024"
+                            cao_emp_cd:
+                              type: string
+                              description: CAO employee code
+                              example: "3953517"
+                            cao_name:
+                              type: string
+                              description: CAO name
+                              example: "Arunkumar K"
+                            cao_designation:
+                              type: string
+                              description: CAO designation
+                              example: "S8"
+                            cao_desg_desc:
+                              type: string
+                              description: CAO designation description
+                              example: "SENIOR DIRECTOR OF AGENCY"
+                            cao_branch_code:
+                              type: string
+                              description: CAO branch code
+                              example: "CH05"
+                            cao_branch_name:
+                              type: string
+                              description: CAO branch name
+                              example: "Chennai - T Nagar"
+                            userOfficialDetails:
+                              type: object
+                              description: Details related to the user's official profile
+                              properties:
+                                idprofile:
+                                  type: string
+                                  example: "33ba3b2e05474eeb98f8b364334dbef4"
+                                identity:
+                                  type: string
+                                  example: "5dceb723474645b1b5958eda0d97f6c2"
+                                business_code:
+                                  type: string
+                                  example: "786"
+                                profile_fullname:
+                                  type: string
+                                  example: "Abhishek M"
+                                designation_code:
+                                  type: string
+                                  example: "S_L_P"
+                                designation:
+                                  type: string
+                                  example: "Senior Life Planner"
+                                irda_number:
+                                  type: string
+                                  example: "0005678678"
+                                joiningdate:
+                                  type: string
+                                  example: "2005-02-07T18:30:00.000Z"
+                                license_expiry_date:
+                                  type: string
+                                  example: "2025-05-13T18:30:00.000Z"
+                                branch:
+                                  type: string
+                                  example: "Mumbai"
+                                sortorder:
+                                  type: string
+                                  example: null
+                                eff_from_date:
+                                  type: string
+                                  example: null
+                                eff_to_date:
+                                  type: string
+                                  example: null
+                                activeflag:
+                                  type: integer
+                                  example: 1
+                                createdby:
+                                  type: string
+                                  example: null
+                                created_date:
+                                  type: string
+                                  example: null
+                                modifiedby:
+                                  type: string
+                                  example: null
+                                modified_date:
+                                  type: string
+                                  example: null
+                                identity_subscriber:
+                                  type: string
+                                  example: null
+                                identity_subscriber_urc:
+                                  type: string
+                                  example: null
+                                leader_code:
+                                  type: string
+                                  example: "001748007"
+                                inactivedate:
+                                  type: string
+                                  example: null
+                            userProfile:
+                              type: object
+                              description: User's profile details
+                              properties:
+                                identity:
+                                  type: string
+                                  example: "5dceb723474645b1b5958eda0d97f6c2"
+                                firstname:
+                                  type: string
+                                  example: "Abhishek"
+                                middlename:
+                                  type: string
+                                  example: null
+                                lastname:
+                                  type: string
+                                  example: "M"
+                                fullname:
+                                  type: string
+                                  example: "Abhishek M"
+                                idmeta_data_gender:
+                                  type: string
+                                  example: "986bd1568afb42cca258cf17a68d60f4"
+                                dob:
+                                  type: string
+                                  example: "1992-12-09T18:30:00.000Z"
+                                idmeta_data_entitytype:
+                                  type: string
+                                  example: "6e913026df2b4c29aeff33212dd3ffa5"
+                                eff_from_date:
+                                  type: string
+                                  example: null
+                                eff_to_date:
+                                  type: string
+                                  example: null
+                                createdby:
+                                  type: string
+                                  example: ""
+                                created_date:
+                                  type: string
+                                  example: null
+                                modifiedby:
+                                  type: string
+                                  example: null
+                                modified_date:
+                                  type: string
+                                  example: null
+                                inactivedate:
+                                  type: string
+                                  example: null
+                                sortorder:
+                                  type: string
+                                  example: null
+                                idmeta_title:
+                                  type: string
+                                  example: null
+                                activeflag:
+                                  type: integer
+                                  example: 1
+                            userContacts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  meta_data_name:
+                                    type: string
+                                    example: "Office Address"
+                                  contact_value:
+                                    type: string
+                                    example: null
+                            userType:
+                              type: string
+                              example: "Agent"
         "401":
           description: Unauthorized - Invalid token
           content:

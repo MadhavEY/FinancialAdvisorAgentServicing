@@ -1,6 +1,7 @@
 const { responseFormatter, statusCodes } = require("../utils");
 const { event, agent } = require("../db");
 const moment = require("moment/moment");
+const { agentDirectory } = require("../services");
 
 exports.getServiceList = async (request, reply) => {
   try {
@@ -41,18 +42,17 @@ exports.getServiceList = async (request, reply) => {
   }
 };
 
-exports.getHierarchy = async (request, reply) => {
+exports.getDirectory = async (request, reply) => {
   try {
-    const { agent_code } = request.query;
-    // const { pageNumber, pageCount, agent_code } = request.body;
-    // const hierarchyData = await agent.getHierarchy(agent_code, pageNumber, pageCount); // Getting meta data from DB & maping keys
-    const hierarchyData = await agent.getHierarchy(agent_code); // Getting meta data from DB & maping keys
-
-    if (hierarchyData.length > 0) {
-      // srData.data.map(item => {
-      //   item.created_date = moment(item.created_date).format("D MMM YYYY");
-      //   item.sr_closed_time = moment(item.sr_closed_time).format("D MMM YYYY");
-      // });
+    const { pageNumber, pageCount, filterOptions } = request.body;
+    let response = await agentDirectory.getFilteredData(filterOptions, pageNumber, pageCount);
+    response.data.map(async (item) => {
+      item.userOfficialDetails = await agent.getOfficialDetailsByAgentCode(item.advisor_code);
+      item.userProfile = await agent.getUserProfileData(item.userOfficialDetails.identity);
+      item.userContacts = await agent.getUserContactData(item.userOfficialDetails.identity);
+      item.userType = await agent.getUserType(item.userOfficialDetails.identity);
+    })
+    if (response.data.length > 0) {
       await event.insertEventTransaction(request.isValid);
       return reply
         .status(statusCodes.OK)
@@ -60,7 +60,7 @@ exports.getHierarchy = async (request, reply) => {
           responseFormatter(
             statusCodes.OK,
             "Hierarchy data retrieved successfully",
-            hierarchyData
+            response
           )
         );
     } else {

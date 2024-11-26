@@ -1,5 +1,5 @@
-// const entityService = require("./entity");
+const agentDirectory = require("./agentDirectory");
 
-// module.exports = {
-//   entityService,
-// };
+module.exports = {
+    agentDirectory,
+};

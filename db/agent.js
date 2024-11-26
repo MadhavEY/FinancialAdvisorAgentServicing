@@ -45,31 +45,92 @@ const getServcingList = async (identity, pageNumber, pageCount) => {
   }
 }
 
-
-// const getHierarchy = async (agent_code, pageNumber, pageCount) => {
-const getHierarchy = async (agent_code) => {
+const getCountForAgentDirectory = async (query, data) => {
   try {
-    // const offset = (pageNumber - 1) * pageCount;
+    const res = await client.query(query, [data.leaderCode, data.statusType, data.searchText]);
+    return res.rows[0].totalcount;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+const getAgentDirectory = async (query, filterOptions, pageCount, offset) => {
+  try {
+    const data = [
+      filterOptions.leaderCode, 
+      filterOptions.statusType, 
+      filterOptions.searchText, 
+      pageCount, 
+      offset
+    ]
+    const res = await client.query(query, data);
+    return res.rows;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+const getOfficialDetailsByAgentCode = async (agent_code) => {
+  try {
+    const query = `
+    SELECT * 
+    FROM core.profile p 
+    WHERE business_code = $1`;
+    const res = await client.query(query, [agent_code]);
+    return res.rows[0];
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+
+const getUserProfileData = async (identity) => {
+  try {
+    const query = `
+    SELECT * 
+    FROM core.entity
+    WHERE identity = $1`;
+    const res = await client.query(query, [identity]);
+    return res.rows[0];
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+
+const getUserContactData = async (identity) => {
+  try {
     const query = `
     SELECT 
-    *
-    FROM agentservicing.agent_directory ad 
-    WHERE advisor_code = $1
-    `;
-    // LIMIT $2 OFFSET $3
-
-    // const countQuery = `
-    //   SELECT COUNT(*) AS totalCount 
-    //   FROM agentservicing.agent_directory ad
-    //   WHERE advisor_code = $1
-    // `;
-
-    // const countRes = await client.query(countQuery, [agent_code]);
-    // const totalCount = parseInt(countRes.rows[0].totalcount, 10);
-    // const totalPages = Math.ceil(totalCount / pageCount);
-    // const res = await client.query(query, [agent_code, pageCount, offset]);
-    const res = await client.query(query, [agent_code]);
+    cm.meta_data_name ,ec.contact_value
+    FROM core.entity_contact ec 
+    INNER JOIN core.cr_metadata cm 
+    ON ec.idmeta_contact_type = cm.idmetadata 
+    WHERE identity = $1`;
+    const res = await client.query(query, [identity]);
     return res.rows;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+const getUserType = async (identity) => {
+  try {
+    const query = `
+    SELECT u.description as userType
+    FROM core.entity_urc_auth eua 
+    INNER JOIN core.user_role_category urc 
+    on eua.idurc = urc.idurc 
+    INNER JOIN core.usertype u 
+    ON u.idusertype = urc.idusertype 
+    WHERE eua.identity = $1`;
+    const res = await client.query(query, [identity]);
+    return res.rows[0].usertype;
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -78,5 +139,10 @@ const getHierarchy = async (agent_code) => {
 
   module.exports = {
     getServcingList,
-    getHierarchy
+    getCountForAgentDirectory,
+    getAgentDirectory,
+    getOfficialDetailsByAgentCode,
+    getUserProfileData,
+    getUserContactData,
+    getUserType
   };
