@@ -52,13 +52,24 @@ exports.getDirectory = async (request, reply) => {
   try {
     const { pageNumber, pageCount, filterOptions } = request.body;
     let response = await agentDirectory.getFilteredData(filterOptions, pageNumber, pageCount);
-    response.data.map(async (item) => {
-      item.userOfficialDetails = await agent.getOfficialDetailsByAgentCode(item.advisor_code);
-      item.userProfile = await agent.getUserProfileData(item.userOfficialDetails.identity);
-      item.userContacts = await agent.getUserContactData(item.userOfficialDetails.identity);
-      item.userType = await agent.getUserType(item.userOfficialDetails.identity);
-    });
-    response.data.sort((a, b) => parseInt(a.advisor_code) - parseInt(b.advisor_code)); //temporary code to put res at first place
+    response.data = await Promise.all(
+      response.data.map(async (item) => {
+        const userOfficialDetails = await agent.getOfficialDetailsByAgentCode(item.advisor_code);
+        const [userProfile, userContacts, userType] = await Promise.all([
+          agent.getUserProfileData(userOfficialDetails.identity),
+          agent.getUserContactData(userOfficialDetails.identity),
+          agent.getUserType(userOfficialDetails.identity),
+        ]);
+
+        item.userOfficialDetails = userOfficialDetails;
+        item.userProfile = userProfile;
+        item.userContacts = userContacts;
+        item.userType = userType;
+
+        return item;
+      })
+    );
+
     if (response.data.length > 0) {
       await event.insertEventTransaction(request.isValid);
       return reply
@@ -75,7 +86,7 @@ exports.getDirectory = async (request, reply) => {
         .status(statusCodes.OK)
         .send(
           responseFormatter(
-            statusCodes.OK, 
+            statusCodes.OK,
             "Data not found",
             response
           )

@@ -80,10 +80,11 @@ const createQuery = async (filterOptions) => {
             ON ad2.advisor_code = ad1.advisor_code
             WHERE ad2.id > ad1.id
         )
-
         ORDER BY ad.id DESC
         LIMIT $4 OFFSET $5
         `
+        // ORDER BY ad.advisor_code
+        
         return query;
     } catch (error) {
         return error

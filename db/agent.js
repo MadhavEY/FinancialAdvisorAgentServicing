@@ -130,7 +130,7 @@ const getUserType = async (identity) => {
     ON u.idusertype = urc.idusertype 
     WHERE eua.identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows.length? res.rows[0]?.usertype : '';
+    return res.rows[0]?.usertype || '';
   } catch (error) {
     console.error("Error: ", error);
     throw error;
