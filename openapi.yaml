@@ -658,3 +658,124 @@ paths:
                   message:
                     type: string
                     example: "Unauthorized access."
+                  
+  /agent/get-sr-details:
+    get:
+      summary: Get SR Details
+      description: Retrieves the SR Details.
+      operationId: getServiceDetails
+      parameters:
+        - name: authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."
+        - name: sr_number
+          in: query
+          required: true
+          description: The service request (SR) number to filter by.
+          schema:
+            type: string
+            example: "9711"
+      responses:
+        "200":
+          description: SR Data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: HTTP status code
+                    example: 200
+                  message:
+                    type: string
+                    description: Status message
+                    example: "SR Data retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sr_number:
+                          type: string
+                          description: The service request (SR) number
+                          example: "9711"
+                        created_date:
+                          type: string
+                          description: The date when the SR was created
+                          example: "27 Nov 2024"
+                        closed_date:
+                          type: string
+                          description: The date when the SR was closed
+                          example: "27 Nov 2024"
+                        values:
+                          type: object
+                          properties:
+                            identity_nominee:
+                              type: string
+                              description: The unique identifier for the nominee
+                              example: "f0df10820e5046cc9f04aa29ade62eb4"
+                            oldValues:
+                              type: object
+                              properties:
+                                title:
+                                  type: string
+                                  description: The old title
+                                  example: "M/s"
+                                dob:
+                                  type: string
+                                  description: The old date of birth
+                                  example: ""
+                                fullname:
+                                  type: string
+                                  description: The old full name
+                                  example: ""
+                                relationship:
+                                  type: string
+                                  description: The old relationship
+                                  example: ""
+                            newValues:
+                              type: object
+                              properties:
+                                title:
+                                  type: string
+                                  description: The new title
+                                  example: "M/s"
+                                dob:
+                                  type: string
+                                  description: The new date of birth
+                                  example: "29/11/1995"
+                                fullname:
+                                  type: string
+                                  description: The new full name
+                                  example: "jyotiKrishna"
+                                relationship:
+                                  type: string
+                                  description: The new relationship
+                                  example: "Daughter-in-law"
+                        categoryname:
+                          type: string
+                          description: The category name of the SR
+                          example: "Nominee"
+                        sub_category_name:
+                          type: string
+                          description: The sub-category name of the SR
+                          example: "Nominee"
+                        sr_status:
+                          type: string
+                          description: The status of the SR
+                          example: "Approved"
+        "401":
+          description: Unauthorized - Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized access."

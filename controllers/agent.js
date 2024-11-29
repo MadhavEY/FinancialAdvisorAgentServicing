@@ -104,3 +104,59 @@ exports.getDirectory = async (request, reply) => {
       );
   }
 };
+
+
+exports.getServiceDetails = async (request, reply) => {
+  try {
+    const { identity } = request.isValid;
+    const { sr_num } = request.query;
+    const srData = await agent.getServiceDetails(identity, sr_num); // Getting meta data from DB & maping keys
+
+    if (srData.length > 0) {
+      srData[0].created_date = moment(srData[0].created_date).format("D MMM YYYY");
+      srData[0].closed_date = moment(srData[0].closed_date).format("D MMM YYYY");
+      if(srData[0].values.oldValues.title){
+        srData[0].values.oldValues.title = await agent.getMetaDataDesc(srData[0].values.oldValues.title);
+      }
+      if(srData[0].values.newValues.title){
+        srData[0].values.newValues.title = await agent.getMetaDataDesc(srData[0].values.newValues.title);
+      }
+      if(srData[0].values.oldValues.relationship){
+        srData[0].values.oldValues.relationship = await agent.getMetaDataDesc(srData[0].values.oldValues.relationship);
+      }
+      if(srData[0].values.newValues.relationship){
+        srData[0].values.newValues.relationship = await agent.getMetaDataDesc(srData[0].values.newValues.relationship);
+      }
+      await event.insertEventTransaction(request.isValid);
+      return reply
+        .status(statusCodes.OK)
+        .send(
+          responseFormatter(
+            statusCodes.OK,
+            "SR Data retrieved successfully",
+            srData
+          )
+        );
+    } else {
+      return reply
+        .status(statusCodes.OK)
+        .send(
+          responseFormatter(
+            statusCodes.OK, 
+            "Data not found",
+            srData
+          )
+        );
+    }
+  } catch (error) {
+    return reply
+      .status(statusCodes.INTERNAL_SERVER_ERROR)
+      .send(
+        responseFormatter(
+          statusCodes.INTERNAL_SERVER_ERROR,
+          "Internal server error occurred",
+          { error: error.message }
+        )
+      );
+  }
+};

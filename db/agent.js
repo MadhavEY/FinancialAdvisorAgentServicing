@@ -137,6 +137,53 @@ const getUserType = async (identity) => {
   }
 }
 
+const getServiceDetails = async (identity, sr_num) => {
+  try {
+    const query = `
+    SELECT 
+    st.sr_number,
+    st.created_date ,
+    st.sr_closed_time as closed_date,
+    st.sr_meta_value as values,
+    s.categoryname ,
+    ss.sub_category_name ,
+    am.meta_data_name as sr_status
+    FROM 
+    agentservicing.sr_transaction st
+    INNER JOIN agentservicing.srcategory s 
+    ON st.idsrcategory = s.idsrcategory 
+    INNER JOIN agentservicing.sr_subcategory ss 
+    ON st.idsr_subcategory = ss.idsr_subcategory 
+    INNER JOIN agentservicing.as_metadata am 
+    ON st.idmeta_sr_status  = am.idmetadata 
+    WHERE identity_sr_createdby = $1 AND st.sr_number = $2
+    `;
+
+    const res = await client.query(query, [identity, sr_num]);
+    return res.rows;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+const getMetaDataDesc = async (idmeta) => {
+  try {
+    const query = `
+    SELECT 
+    meta_data_name 
+    FROM core.cr_metadata cm 
+    WHERE idmetadata  = $1
+    `;
+
+    const res = await client.query(query, [idmeta]);
+    return res.rows[0].meta_data_name;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
   module.exports = {
     getServcingList,
     getCountForAgentDirectory,
@@ -144,5 +191,7 @@ const getUserType = async (identity) => {
     getOfficialDetailsByAgentCode,
     getUserProfileData,
     getUserContactData,
-    getUserType
+    getUserType,
+    getServiceDetails,
+    getMetaDataDesc
   };
