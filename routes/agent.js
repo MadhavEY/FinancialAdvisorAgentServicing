@@ -13,6 +13,11 @@ async function quoteRoutes(fastify, options) {
         { preHandler: [authentication, validation] },
         agent.getDirectory
     );
+    fastify.get(
+        "/get-sr-details",
+        { preHandler: [authentication, validation] },
+        agent.getServiceDetails
+    );
   }
   
   module.exports = quoteRoutes;
