@@ -702,73 +702,93 @@ paths:
                       properties:
                         sr_number:
                           type: string
-                          description: The service request (SR) number
-                          example: "9711"
+                          description: Unique Service Request number
+                          example: "2844"
                         created_date:
                           type: string
-                          description: The date when the SR was created
-                          example: "27 Nov 2024"
+                          format: date
+                          description: The date the SR was created
+                          example: "29 Nov 2024"
                         closed_date:
                           type: string
-                          description: The date when the SR was closed
-                          example: "27 Nov 2024"
+                          format: date
+                          description: The date the SR was closed
+                          example: "29 Nov 2024"
                         values:
                           type: object
                           properties:
                             identity_nominee:
                               type: string
-                              description: The unique identifier for the nominee
+                              description: Nominee identifier
                               example: "f0df10820e5046cc9f04aa29ade62eb4"
                             oldValues:
                               type: object
                               properties:
                                 title:
                                   type: string
-                                  description: The old title
-                                  example: "M/s"
+                                  description: The old title of the nominee
+                                  example: "Mr"
                                 dob:
                                   type: string
-                                  description: The old date of birth
+                                  description: The old date of birth of the nominee
                                   example: ""
                                 fullname:
                                   type: string
-                                  description: The old full name
+                                  description: The old full name of the nominee
                                   example: ""
                                 relationship:
                                   type: string
-                                  description: The old relationship
+                                  description: The old relationship of the nominee
                                   example: ""
                             newValues:
                               type: object
                               properties:
                                 title:
                                   type: string
-                                  description: The new title
+                                  description: The new title of the nominee
                                   example: "M/s"
                                 dob:
                                   type: string
-                                  description: The new date of birth
+                                  description: The new date of birth of the nominee
                                   example: "29/11/1995"
                                 fullname:
                                   type: string
-                                  description: The new full name
-                                  example: "jyotiKrishna"
+                                  description: The new full name of the nominee
+                                  example: "jyotishar"
                                 relationship:
                                   type: string
-                                  description: The new relationship
-                                  example: "Daughter-in-law"
+                                  description: The new relationship of the nominee
+                                  example: "Brother-in-law"
                         categoryname:
                           type: string
-                          description: The category name of the SR
+                          description: Category name of the SR
                           example: "Nominee"
                         sub_category_name:
                           type: string
-                          description: The sub-category name of the SR
+                          description: Sub-category name of the SR
                           example: "Nominee"
                         sr_status:
                           type: string
-                          description: The status of the SR
+                          description: Status of the SR
                           example: "Approved"
+                        timeEvents:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              event:
+                                type: string
+                                description: The event name
+                                example: "Service Request Raised"
+                              time:
+                                type: string
+                                description: Time of the event
+                                example: "07:39 AM"
+                              date:
+                                type: string
+                                format: date
+                                description: Date of the event
+                                example: "29/11/2024"
         "401":
           description: Unauthorized - Invalid token
           content:

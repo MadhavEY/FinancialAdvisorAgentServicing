@@ -113,20 +113,7 @@ exports.getServiceDetails = async (request, reply) => {
     const srData = await agent.getServiceDetails(identity, sr_num); // Getting meta data from DB & maping keys
 
     if (srData.length > 0) {
-      srData[0].created_date = moment(srData[0].created_date).format("D MMM YYYY");
-      srData[0].closed_date = moment(srData[0].closed_date).format("D MMM YYYY");
-      if(srData[0].values.oldValues.title){
-        srData[0].values.oldValues.title = await agent.getMetaDataDesc(srData[0].values.oldValues.title);
-      }
-      if(srData[0].values.newValues.title){
-        srData[0].values.newValues.title = await agent.getMetaDataDesc(srData[0].values.newValues.title);
-      }
-      if(srData[0].values.oldValues.relationship){
-        srData[0].values.oldValues.relationship = await agent.getMetaDataDesc(srData[0].values.oldValues.relationship);
-      }
-      if(srData[0].values.newValues.relationship){
-        srData[0].values.newValues.relationship = await agent.getMetaDataDesc(srData[0].values.newValues.relationship);
-      }
+      const updatedData = await agentDirectory.updateSrDetailsData(srData);
       await event.insertEventTransaction(request.isValid);
       return reply
         .status(statusCodes.OK)

@@ -1,4 +1,5 @@
-const { getCountForAgentDirectory, getAgentDirectory } = require("../db/agent");
+const moment = require("moment/moment");
+const { getCountForAgentDirectory, getAgentDirectory, getMetaDataDesc } = require("../db/agent");
 
 const getFilteredData = async (filterOptions, pageNumber, pageCount) => {
     try {
@@ -152,9 +153,48 @@ const getCountQuery = async (filterOptions) => {
 }
 
 
+const updateSrDetailsData = async (data) => {
+    try {
+        let updateData = data[0];
+        let timeEvents = [];
+        timeEvents.push({
+            event: 'Service Request Raised',
+            time: moment(updateData.created_date, "YYYY-MM-DD HH:mm:ss.SSS").format("HH:mm A"),
+            date: moment(updateData.created_date, "YYYY-MM-DD HH:mm:ss.SSS").format("DD/MM/YYYY")
+        });
+        timeEvents.push({
+            event: updateData.sr_status,
+            time: moment(updateData.closed_date, "YYYY-MM-DD HH:mm:ss.SSS").format("HH:mm A"),
+            date: moment(updateData.closed_date, "YYYY-MM-DD HH:mm:ss.SSS").format("DD/MM/YYYY")
+        });
+
+        updateData.timeEvents = timeEvents;
+
+        updateData.created_date = moment(updateData.created_date).format("D MMM YYYY");
+        updateData.closed_date = moment(updateData.closed_date).format("D MMM YYYY");
+        if(updateData.values.oldValues.title){
+            updateData.values.oldValues.title = await getMetaDataDesc(updateData.values.oldValues.title);
+        }
+        if(updateData.values.newValues.title){
+            updateData.values.newValues.title = await getMetaDataDesc(updateData.values.newValues.title);
+        }
+        if(updateData.values.oldValues.relationship){
+            updateData.values.oldValues.relationship = await getMetaDataDesc(updateData.values.oldValues.relationship);
+        }
+        if(updateData.values.newValues.relationship){
+            updateData.values.newValues.relationship = await getMetaDataDesc(updateData.values.newValues.relationship);
+        }
+        return updateData;
+    } catch (error) {
+        return error
+    }
+}
+
+
 
 
 
 module.exports = {
-    getFilteredData
+    getFilteredData,
+    updateSrDetailsData
 }
