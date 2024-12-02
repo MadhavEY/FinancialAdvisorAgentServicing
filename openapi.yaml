@@ -20,6 +20,38 @@ paths:
           schema:
             type: string
             example: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pageNumber
+                - pageCount
+                - reqType
+                - reqStatus
+              properties:
+                pageNumber:
+                  type: integer
+                  description: The page number for pagination.
+                  example: 1
+                pageCount:
+                  type: integer
+                  description: The number of items per page.
+                  example: 100
+                reqType:
+                  type: array
+                  items:
+                    type: string
+                  description: List of subcategory IDs to filter by.
+                  example: ["2fc7ee5bd20544feb3d8a7db247ff30d", "8b1a35a3ac7a4a6f863c1fb34de40845"]
+                reqStatus:
+                  type: array
+                  items:
+                    type: string
+                  description: List of status IDs to filter by.
+                  example: ["d0cc0947a9f34d099e66048dc64c1740"]
       responses:
         "200":
           description: Hierarchy data retrieved successfully
@@ -789,6 +821,77 @@ paths:
                                 format: date
                                 description: Date of the event
                                 example: "29/11/2024"
+        "401":
+          description: Unauthorized - Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized access."
+  
+  /agent/get-sr-filters:
+    get:
+      summary: Get SR Filters
+      description: Retrieves the SR Filters.
+      operationId: getServiceFilters
+      parameters:
+        - name: authorization
+          in: header
+          required: true
+          description: Bearer token for authorization.
+          schema:
+            type: string
+            example: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs..."
+      responses:
+        "200":
+          description: SR Data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: HTTP status code
+                    example: 200
+                  message:
+                    type: string
+                    description: Status message
+                    example: "Filter data retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      types:
+                        type: array
+                        description: List of sub-categories for the SR
+                        items:
+                          type: object
+                          properties:
+                            idsr_subcategory:
+                              type: string
+                              description: Unique identifier for the sub-category
+                              example: "284c8ede40b34ae6ac86107aa063dc2b"
+                            sub_category_name:
+                              type: string
+                              description: Name of the sub-category
+                              example: "Secondary Phone"
+                      status:
+                        type: array
+                        description: List of SR status options
+                        items:
+                          type: object
+                          properties:
+                            idmetadata:
+                              type: string
+                              description: Unique identifier for the status
+                              example: "83fbdafa519d427eac11e2eb7c237873"
+                            meta_data_name:
+                              type: string
+                              description: Name of the SR status
+                              example: "Pending for QC"
         "401":
           description: Unauthorized - Invalid token
           content:
