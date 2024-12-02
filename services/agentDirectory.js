@@ -152,7 +152,6 @@ const getCountQuery = async (filterOptions) => {
     }
 }
 
-
 const updateSrDetailsData = async (data) => {
     try {
         let updateData = data[0];

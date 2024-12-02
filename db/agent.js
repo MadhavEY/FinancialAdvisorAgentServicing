@@ -1,9 +1,9 @@
 const { client } = require("../config/db");
 
-const getServcingList = async (identity, pageNumber, pageCount) => {
+const getServcingList = async (identity, pageNumber, pageCount, reqType, reqStatus) => {
   try {
     const offset = (pageNumber - 1) * pageCount;
-    const query = `
+    let query = `
     SELECT 
     st.sr_number,
     st.created_date ,
@@ -19,10 +19,33 @@ const getServcingList = async (identity, pageNumber, pageCount) => {
     ON st.idsr_subcategory = ss.idsr_subcategory 
     INNER JOIN agentservicing.as_metadata am 
     ON st.idmeta_sr_status  = am.idmetadata 
-    WHERE identity_sr_createdby = $1
+    WHERE identity_sr_createdby = $1`
+
+    let params = [identity];
+    let index = 2;
+
+    if (reqType && reqType.length > 0) {
+      query += `
+        AND st.idsr_subcategory = ANY($${index})
+      `;
+      params.push(reqType);
+      index++;
+    }
+    
+    if (reqStatus && reqStatus.length > 0) {
+      query += `
+        AND st.idmeta_sr_status = ANY($${index})
+      `;
+      params.push(reqStatus);
+      index++;
+    }
+    
+    query += `
     ORDER BY created_date desc 
-    LIMIT $2 OFFSET $3
+    LIMIT $${index} OFFSET $${index + 1}
     `;
+
+    params.push(pageCount, offset);
 
     const countQuery = `
       SELECT COUNT(*) AS totalCount 
@@ -33,7 +56,7 @@ const getServcingList = async (identity, pageNumber, pageCount) => {
     const countRes = await client.query(countQuery, [identity]);
     const totalCount = parseInt(countRes.rows[0].totalcount, 10);
     const totalPages = Math.ceil(totalCount / pageCount);
-    const res = await client.query(query, [identity, pageCount, offset]);
+    const res = await client.query(query, params);
     return {
       totalCount,
       totalPages,
@@ -86,7 +109,6 @@ const getOfficialDetailsByAgentCode = async (agent_code) => {
   }
 }
 
-
 const getUserProfileData = async (identity) => {
   try {
     const query = `
@@ -100,7 +122,6 @@ const getUserProfileData = async (identity) => {
     throw error;
   }
 }
-
 
 const getUserContactData = async (identity) => {
   try {
@@ -184,6 +205,45 @@ const getMetaDataDesc = async (idmeta) => {
   }
 }
 
+const getSrListSubCategories = async(categories) => {
+  try {
+    const query= `
+    SELECT 
+    ss.idsr_subcategory ,
+    ss.sub_category_name 
+    FROM agentservicing.srcategory s 
+    INNER JOIN agentservicing.sr_subcategory ss 
+    ON s.idsrcategory = ss.idsrcategory
+    WHERE s.categoryname = ANY($1)
+    `;
+
+    const res = await client.query(query, [categories]);
+    return res.rows;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+
+const getSrStatusOptions = async(status) => {
+  try {
+    const query= `
+    SELECT 
+    idmetadata ,
+    meta_data_name 
+    FROM agentservicing.as_metadata am 
+    WHERE idmetamaster = $1
+    `;
+
+    const res = await client.query(query, [status]);
+    return res.rows;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
   module.exports = {
     getServcingList,
     getCountForAgentDirectory,
@@ -193,5 +253,7 @@ const getMetaDataDesc = async (idmeta) => {
     getUserContactData,
     getUserType,
     getServiceDetails,
-    getMetaDataDesc
+    getMetaDataDesc,
+    getSrListSubCategories,
+    getSrStatusOptions
   };
