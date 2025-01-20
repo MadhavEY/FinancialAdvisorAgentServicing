@@ -1,6 +1,12 @@
 const { client } = require("../config/db");
 
-const getServcingList = async (identity, pageNumber, pageCount, reqType, reqStatus) => {
+const getServcingList = async (
+  identity,
+  pageNumber,
+  pageCount,
+  reqType,
+  reqStatus
+) => {
   try {
     const offset = (pageNumber - 1) * pageCount;
     let query = `
@@ -19,7 +25,7 @@ const getServcingList = async (identity, pageNumber, pageCount, reqType, reqStat
     ON st.idsr_subcategory = ss.idsr_subcategory 
     INNER JOIN agentservicing.as_metadata am 
     ON st.idmeta_sr_status  = am.idmetadata 
-    WHERE identity_sr_createdby = $1`
+    WHERE identity_sr_createdby = $1`;
 
     let params = [identity];
     let index = 2;
@@ -31,7 +37,7 @@ const getServcingList = async (identity, pageNumber, pageCount, reqType, reqStat
       params.push(reqType);
       index++;
     }
-    
+
     if (reqStatus && reqStatus.length > 0) {
       query += `
         AND st.idmeta_sr_status = ANY($${index})
@@ -39,7 +45,7 @@ const getServcingList = async (identity, pageNumber, pageCount, reqType, reqStat
       params.push(reqStatus);
       index++;
     }
-    
+
     query += `
     ORDER BY created_date desc 
     LIMIT $${index} OFFSET $${index + 1}
@@ -60,40 +66,44 @@ const getServcingList = async (identity, pageNumber, pageCount, reqType, reqStat
     return {
       totalCount,
       totalPages,
-      data: res.rows
+      data: res.rows,
     };
   } catch (error) {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getCountForAgentDirectory = async (query, data) => {
   try {
-    const res = await client.query(query, [data.leaderCode, data.statusType, data.searchText]);
+    const res = await client.query(query, [
+      data.leaderCode,
+      data.statusType,
+      data.searchText,
+    ]);
     return res.rows[0].totalcount;
   } catch (error) {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getAgentDirectory = async (query, filterOptions, pageCount, offset) => {
   try {
     const data = [
-      filterOptions.leaderCode, 
-      filterOptions.statusType, 
-      filterOptions.searchText, 
-      pageCount, 
-      offset
-    ]
+      filterOptions.leaderCode,
+      filterOptions.statusType,
+      filterOptions.searchText,
+      pageCount,
+      offset,
+    ];
     const res = await client.query(query, data);
     return res.rows;
   } catch (error) {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getOfficialDetailsByAgentCode = async (agent_code) => {
   try {
@@ -107,7 +117,7 @@ const getOfficialDetailsByAgentCode = async (agent_code) => {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getUserProfileData = async (identity) => {
   try {
@@ -121,7 +131,7 @@ const getUserProfileData = async (identity) => {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getUserContactData = async (identity) => {
   try {
@@ -138,7 +148,7 @@ const getUserContactData = async (identity) => {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getUserType = async (identity) => {
   try {
@@ -151,12 +161,12 @@ const getUserType = async (identity) => {
     ON u.idusertype = urc.idusertype 
     WHERE eua.identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows[0]?.usertype || '';
+    return res.rows[0]?.usertype || "";
   } catch (error) {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getServiceDetails = async (identity, sr_num) => {
   try {
@@ -186,7 +196,7 @@ const getServiceDetails = async (identity, sr_num) => {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
 const getMetaDataDesc = async (idmeta) => {
   try {
@@ -203,11 +213,11 @@ const getMetaDataDesc = async (idmeta) => {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
-const getSrListSubCategories = async(categories) => {
+const getSrListSubCategories = async (categories) => {
   try {
-    const query= `
+    const query = `
     SELECT 
     ss.idsr_subcategory ,
     ss.sub_category_name 
@@ -223,12 +233,11 @@ const getSrListSubCategories = async(categories) => {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
-
-const getSrStatusOptions = async(status) => {
+const getSrStatusOptions = async (status) => {
   try {
-    const query= `
+    const query = `
     SELECT 
     idmetadata ,
     meta_data_name 
@@ -242,18 +251,33 @@ const getSrStatusOptions = async(status) => {
     console.error("Error: ", error);
     throw error;
   }
-}
+};
 
-  module.exports = {
-    getServcingList,
-    getCountForAgentDirectory,
-    getAgentDirectory,
-    getOfficialDetailsByAgentCode,
-    getUserProfileData,
-    getUserContactData,
-    getUserType,
-    getServiceDetails,
-    getMetaDataDesc,
-    getSrListSubCategories,
-    getSrStatusOptions
-  };
+const getAgent = async (agentCode) => {
+  try {
+    const query = `
+    SELECT ad.* 
+    FROM agentservicing.agent_directory ad
+    WHERE advisor_code = $1;`;
+    const res = await client.query(query, [agentCode]);
+    return res.rows;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
+
+module.exports = {
+  getServcingList,
+  getCountForAgentDirectory,
+  getAgentDirectory,
+  getOfficialDetailsByAgentCode,
+  getUserProfileData,
+  getUserContactData,
+  getUserType,
+  getServiceDetails,
+  getMetaDataDesc,
+  getSrListSubCategories,
+  getSrStatusOptions,
+  getAgent,
+};

@@ -1,28 +1,32 @@
 const { authentication, validation } = require("../middleware");
 const { agent } = require("../controllers");
 
-
 async function quoteRoutes(fastify, options) {
-    fastify.post(
-        "/get-sr-list",
-        { preHandler: [authentication, validation] },
-        agent.getServiceList
-    );
-    fastify.post(
-        "/get-directory",
-        { preHandler: [authentication, validation] },
-        agent.getDirectory
-    );
-    fastify.get(
-        "/get-sr-details",
-        { preHandler: [authentication, validation] },
-        agent.getServiceDetails
-    );
-    fastify.get(
-        "/get-sr-filters",
-        { preHandler: [authentication, validation] },
-        agent.getSrFilters
-    );
-  }
-  
-  module.exports = quoteRoutes;
+  fastify.post(
+    "/get-sr-list",
+    { preHandler: [authentication, validation] },
+    agent.getServiceList
+  );
+  fastify.post(
+    "/get-directory",
+    { preHandler: [authentication, validation] },
+    agent.getDirectory
+  );
+  fastify.get(
+    "/get-sr-details",
+    { preHandler: [authentication, validation] },
+    agent.getServiceDetails
+  );
+  fastify.get(
+    "/get-sr-filters",
+    { preHandler: [authentication, validation] },
+    agent.getSrFilters
+  );
+  fastify.post(
+    "/get-agent-details",
+    { preHandler: [authentication, validation] },
+    agent.getAgentDetails
+  );
+}
+
+module.exports = quoteRoutes;
