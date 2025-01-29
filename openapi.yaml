@@ -1432,6 +1432,33 @@ paths:
                                   contact_value:
                                     type: string
                                     example: null
+                                  countrycode:
+                                    type: string
+                                    example: null
+                                  dialingcode:
+                                    type: string
+                                    example: null
+                                  address_line_1:
+                                    type: string
+                                    example: H.No. 344
+                                  address_line_2:
+                                    type: string
+                                    example: Modern Street
+                                  location_name:
+                                    type: string
+                                    example: Adarsh Nagar
+                                  state:
+                                    type: string
+                                    example: Telangana
+                                  pincode:
+                                    type: string
+                                    example: 203932
+                                  countryname:
+                                    type: string
+                                    example: India
+                                  district:
+                                    type: string
+                                    example: Surat
                             userType:
                               type: string
                               example: "Agent"

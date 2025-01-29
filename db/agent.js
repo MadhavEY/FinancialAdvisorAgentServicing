@@ -145,7 +145,9 @@ const getUserContactData = async (identity) => {
     ec.address_line_2,
     ec.location_name, 
     ec.state, 
-    ec.pincode
+    ec.pincode,
+    ec.countryname,
+    ec.district
     FROM core.entity_contact ec 
     INNER JOIN core.cr_metadata cm 
     ON ec.idmeta_contact_type = cm.idmetadata 
