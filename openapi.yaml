@@ -1435,6 +1435,9 @@ paths:
                             userType:
                               type: string
                               example: "Agent"
+                            iduserType:
+                              type: string
+                              example: "2f4eab3a82584d5183a003dd82fc50dd"
         "401":
           description: Unauthorized - Invalid token
           content:
