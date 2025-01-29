@@ -137,7 +137,15 @@ const getUserContactData = async (identity) => {
   try {
     const query = `
     SELECT 
-    cm.meta_data_name ,ec.contact_value
+    cm.meta_data_name,
+    ec.contact_value,
+    ec.countrycode, 
+    ec.dialingcode, 
+    ec.address_line_1, 
+    ec.address_line_2,
+    ec.location_name, 
+    ec.state, 
+    ec.pincode
     FROM core.entity_contact ec 
     INNER JOIN core.cr_metadata cm 
     ON ec.idmeta_contact_type = cm.idmetadata 
@@ -153,7 +161,8 @@ const getUserContactData = async (identity) => {
 const getUserType = async (identity) => {
   try {
     const query = `
-    SELECT u.description as userType
+    SELECT u.description as userType,
+    u.idusertype
     FROM core.entity_urc_auth eua 
     INNER JOIN core.user_role_category urc 
     on eua.idurc = urc.idurc 
@@ -161,7 +170,17 @@ const getUserType = async (identity) => {
     ON u.idusertype = urc.idusertype 
     WHERE eua.identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows[0]?.usertype || "";
+    if(res.rows[0]?.usertype && res.rows[0]?.idusertype){
+      return {
+        userType: res.rows[0]?.usertype,
+        idusertype: res.rows[0]?.idusertype
+      }
+    } else {
+        return {
+          userType: '',
+          idusertype: ''
+        }
+    }
   } catch (error) {
     console.error("Error: ", error);
     throw error;

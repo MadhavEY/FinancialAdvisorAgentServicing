@@ -67,10 +67,13 @@ exports.getDirectory = async (request, reply) => {
           agent.getUserType(userOfficialDetails.identity),
         ]);
 
+        userOfficialDetails.joiningdate = moment(userOfficialDetails.joiningdate).format('YYYY-MM-DD');
+        userOfficialDetails.license_expiry_date = moment(userOfficialDetails.license_expiry_date).format('YYYY-MM-DD');
+
         item.userOfficialDetails = userOfficialDetails;
         item.userProfile = userProfile;
         item.userContacts = userContacts;
-        item.userType = userType;
+        item.userType = userType.userType;
 
         return item;
       })
@@ -196,10 +199,14 @@ exports.getAgentDetails = async (request, reply) => {
           agent.getUserType(userOfficialDetails.identity),
         ]);
 
+        userOfficialDetails.joiningdate = moment(userOfficialDetails.joiningdate).format('YYYY-MM-DD');
+        userOfficialDetails.license_expiry_date = moment(userOfficialDetails.license_expiry_date).format('YYYY-MM-DD');
+
         item.userOfficialDetails = userOfficialDetails;
         item.userProfile = userProfile;
         item.userContacts = userContacts;
-        item.userType = userType;
+        item.userType = userType.userType;
+        item.iduserType = userType.idusertype;
 
         return item;
       })
