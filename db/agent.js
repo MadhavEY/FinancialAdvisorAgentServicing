@@ -112,7 +112,19 @@ const getOfficialDetailsByAgentCode = async (agent_code) => {
     FROM core.profile p 
     WHERE business_code = $1`;
     const res = await client.query(query, [agent_code]);
-    return res.rows[0] || {};
+
+    if (!res.rows || res.rows.length === 0) {
+      return {}; // Return empty array if no data
+    }
+
+    // Replace null values with empty string only if data exists
+    const cleanedData = res.rows.map(row => {
+      return Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [key, value ?? ""])
+      );
+    });
+
+    return cleanedData[0];
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -126,7 +138,19 @@ const getUserProfileData = async (identity) => {
     FROM core.entity
     WHERE identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows[0] || {};
+
+    if (!res.rows || res.rows.length === 0) {
+      return {}; // Return empty array if no data
+    }
+
+    // Replace null values with empty string only if data exists
+    const cleanedData = res.rows.map(row => {
+      return Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [key, value ?? ""])
+      );
+    });
+
+    return cleanedData[0];
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -153,7 +177,19 @@ const getUserContactData = async (identity) => {
     ON ec.idmeta_contact_type = cm.idmetadata 
     WHERE identity = $1`;
     const res = await client.query(query, [identity]);
-    return res.rows || [];
+
+    if (!res.rows || res.rows.length === 0) {
+      return []; // Return empty array if no data
+    }
+
+    // Replace null values with empty string only if data exists
+    const cleanedData = res.rows.map(row => {
+      return Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [key, value ?? ""])
+      );
+    });
+
+    return cleanedData[0];
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -172,10 +208,21 @@ const getUserType = async (identity) => {
     ON u.idusertype = urc.idusertype 
     WHERE eua.identity = $1`;
     const res = await client.query(query, [identity]);
-    if(res.rows[0]?.usertype && res.rows[0]?.idusertype){
+    if (!res.rows || res.rows.length === 0) {
+      return {}; // Return empty array if no data
+    }
+
+    // Replace null values with empty string only if data exists
+    const cleanedData = res.rows.map(row => {
+      return Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [key, value ?? ""])
+      );
+    });
+
+    if(cleanedData[0]?.usertype && cleanedData[0]?.idusertype){
       return {
-        userType: res.rows[0]?.usertype,
-        idusertype: res.rows[0]?.idusertype
+        userType: cleanedData[0]?.usertype,
+        idusertype: cleanedData[0]?.idusertype
       }
     } else {
         return {
@@ -281,7 +328,15 @@ const getAgent = async (agentCode) => {
     FROM agentservicing.agent_directory ad
     WHERE advisor_code = $1;`;
     const res = await client.query(query, [agentCode]);
-    return res.rows;
+
+    // Replace null values with empty string only if data exists
+    const cleanedData = res.rows.map(row => {
+      return Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [key, value ?? ""])
+      );
+    });
+
+    return cleanedData;
   } catch (error) {
     console.error("Error: ", error);
     throw error;
