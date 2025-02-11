@@ -189,7 +189,7 @@ const getUserContactData = async (identity) => {
       );
     });
 
-    return cleanedData[0];
+    return cleanedData;
   } catch (error) {
     console.error("Error: ", error);
     throw error;
